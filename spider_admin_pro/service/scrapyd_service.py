@@ -2,7 +2,7 @@
 import json
 
 from requests.auth import HTTPBasicAuth
-from scrapyd_api import ScrapydClient
+from spider_admin_pro.scrapyd_api import ScrapydClient
 
 from spider_admin_pro.enums.schedule_type_enum import ScheduleTypeEnum
 from spider_admin_pro.model.schedule_history_model import ScheduleHistoryModel
