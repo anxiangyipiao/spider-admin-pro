@@ -7,6 +7,7 @@ from spider_admin_pro.model.base import BaseModel
 
 
 class StatsCollectionModel(BaseModel):
+    
     """运行结果数据收集"""
     id = AutoField(primary_key=True)
 

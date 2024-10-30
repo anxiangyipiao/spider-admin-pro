@@ -8,6 +8,12 @@
 BASIC_AUTH_USERNAME = "admin"
 BASIC_AUTH_PASSWORD = '123456'
 
+
+# redis
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+REDIS_DB = 0
+
 # BASIC_AUTH_JWT_KEY = secret_util.get_random_secret()
 
 # token过期时间，单位天
