@@ -18,7 +18,7 @@ stats_collection_api = BlueprintAppApi("stats_collection", __name__)
 
 @stats_collection_api.post('/addItem')
 def add_item():
-    pprint(request.json)
+    # pprint(request.json)
 
     spider_job_id = request.json['job_id']
     project = request.json['project']

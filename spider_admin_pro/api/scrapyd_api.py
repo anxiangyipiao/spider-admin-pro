@@ -129,8 +129,11 @@ def schedule():
     project = request.json['project']
     spider = request.json['spider']
     scrapyd_server_id = request.json['scrapydServerId']
-    options = request.json['options']
-
+    if 'options' in request.json:
+        options = request.json['options']
+    else:
+        options = {}
+    
     kwargs = {
         'project': project,
         'spider': spider,
