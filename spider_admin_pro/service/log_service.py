@@ -59,7 +59,7 @@ class LogCollectionService(object):
 
         return datas
     
-
+    @classmethod
     def get_data(cls, page=1, PAGE_SIZE=10):
         # 获取分页的键
         keys = cls.page_key(page, PAGE_SIZE)

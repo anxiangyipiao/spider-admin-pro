@@ -96,7 +96,7 @@ def getTaskLog():
     page = request.json.get("page", 1)
     size = request.json.get("size", 20)
     
-    datas,count = LogCollectionService.get_data(page=page, PAGE_SIZE=size)
+    datas,count = LogCollectionService.get_data(page=page,PAGE_SIZE=size)
 
     return {
         'list': datas,
