@@ -4,39 +4,38 @@ import datetime
 import json
 from spider_admin_pro.utils.redis_util import RedisConnectionManager
 
+task_redis_server = RedisConnectionManager.get_connection()
+sorted_set_key = 'key_sorted_set'
 
 
 class LogCollectionService(object):
 
 
-    def __init__(self):
-        
-        self.task_redis_server = RedisConnectionManager.get_connection()
-        self.sorted_set_key = 'key_sorted_set'
 
-
-    def page_key(self, page, PAGE_SIZE=10):
+    @classmethod
+    def page_key(cls, page, PAGE_SIZE=10):
 
         start_index = (page - 1) * PAGE_SIZE
         end_index = start_index + PAGE_SIZE - 1
 
         # 从有序集合中获取分页的键
-        keys = self.task_redis_server.zrevrange(self.sorted_set_key, start_index, end_index)
+        keys = task_redis_server.zrevrange(sorted_set_key, start_index, end_index)
 
         return keys
-
-    def count_key(self):
+    @classmethod
+    def count_key(cls):
         # 获取有序集合的长度
-        count = self.task_redis_server.zcard(self.sorted_set_key)
+        count = task_redis_server.zcard(sorted_set_key)
         return count
-
-    def get_data_by_key(self,keys:list):
+    
+    @classmethod
+    def get_data_by_key(cls,keys:list):
     
     # 从哈希表中获取数据
         datas = []
         for key in keys:
             
-            data = self.task_redis_server.hgetall(key)
+            data = task_redis_server.hgetall(key)
             # 将bytes转换为string类型
             # 转为字典
             str_data = {
@@ -59,3 +58,14 @@ class LogCollectionService(object):
             datas.append(str_data)
 
         return datas
+    
+
+    def get_data(cls, page=1, PAGE_SIZE=10):
+        # 获取分页的键
+        keys = cls.page_key(page, PAGE_SIZE)
+        # 获取数据
+        datas = cls.get_data_by_key(keys)
+        # 获取总数
+        count = cls.count_key()
+
+        return datas, count

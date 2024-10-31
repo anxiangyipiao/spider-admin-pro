@@ -11,7 +11,7 @@ from flask import request
 from spider_admin_pro.model.stats_collection_model import StatsCollectionModel
 from spider_admin_pro.service import schedule_history_service
 from spider_admin_pro.service.stats_collection_service import StatsCollectionService
-from spider_admin_pro.service.log_service import StatsCollectionService
+from spider_admin_pro.service.log_service import LogCollectionService
 from spider_admin_pro.utils.flask_ext.flask_app import BlueprintAppApi
 
 stats_collection_api = BlueprintAppApi("stats_collection", __name__)
@@ -92,21 +92,13 @@ def delete():
 
 @stats_collection_api.post('/getTaskLog')
 def getTaskLog():
+    
     page = request.json.get("page", 1)
     size = request.json.get("size", 20)
-    project = request.json.get("project")
-    spider = request.json.get("spider")
-
-    order_prop = request.json.get("order_prop")
-    order_type = request.json.get("order_type")  # descending, ascending
-    scrapyd_server_id = request.json.get("scrapydServerId")
+    
+    datas,count = LogCollectionService.get_data(page=page, PAGE_SIZE=size)
 
     return {
-        'list': StatsCollectionService.list(
-            page=page, size=size,
-            scrapyd_server_id=scrapyd_server_id,
-            project=project, spider=spider,
-            order_prop=order_prop, order_type=order_type
-        ),
-        'total': StatsCollectionService.count(project=project, spider=spider)
+        'list': datas,
+        'total': count
     }
