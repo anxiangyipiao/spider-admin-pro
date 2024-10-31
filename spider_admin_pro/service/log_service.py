@@ -22,8 +22,5 @@ def get_log_key(data):
         cursor, keys_batch = service.scan(cursor=cursor, match=pattern, count=100)
         keys.extend(keys_batch)
 
-    
-
-
     # 将字节字符串转换为普通字符串
     keys = [key.decode('utf-8') for key in keys]
