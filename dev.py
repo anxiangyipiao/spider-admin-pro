@@ -6,6 +6,11 @@
 """
 
 from spider_admin_pro import app
+# from spider_admin_pro.service.log_service import LogCollectionService
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='localhost', port=18000)
+
+    # print(LogCollectionService.get_today_info())
+    

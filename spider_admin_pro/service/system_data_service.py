@@ -3,6 +3,7 @@ from spider_admin_pro.model import ScrapydServerModel
 from spider_admin_pro.service import scrapyd_server_service
 from spider_admin_pro.service.schedule_service import scheduler
 from spider_admin_pro.service.scrapyd_service import ScrapydService, get_client
+from spider_admin_pro.service.log_service import LogCollectionService
 from spider_admin_pro.utils.system_info_util import SystemInfoUtil
 from spider_admin_pro.version import VERSION
 
@@ -24,6 +25,8 @@ class SystemDataService(object):
             projects = len(client.list_projects())
         except Exception:
             projects = 0
+
+        dict = LogCollectionService.get_today_info()
 
         return [
             {
@@ -56,6 +59,21 @@ class SystemDataService(object):
                 'title': '完成任务',
                 'count': res.get('finished', 0),
                 'route': {'name': 'job', 'query': {'status': 'finished'}}
+            },
+            {
+                'title': '今日总更新',
+                'count': dict['today_all_request'],
+                'route': {}
+            },
+            {
+                'title': '今日已爬取',
+                'count': dict['today_success_request'],
+                'route': {}
+            },
+            {
+                'title': '今日未爬取',
+                'count': dict['today_fail_request'],
+                'route': {}
             }
         ]
 

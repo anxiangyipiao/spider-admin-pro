@@ -1,6 +1,6 @@
 
 # 导入redis
-import datetime
+from datetime import datetime, timedelta
 import json
 from spider_admin_pro.utils.redis_util import RedisConnectionManager
 
@@ -9,7 +9,6 @@ sorted_set_key = 'key_sorted_set'
 
 
 class LogCollectionService(object):
-
 
 
     @classmethod
@@ -33,6 +32,7 @@ class LogCollectionService(object):
     
     # 从哈希表中获取数据
         datas = []
+        
         for key in keys:
             
             data = task_redis_server.hgetall(key)
@@ -69,3 +69,51 @@ class LogCollectionService(object):
         count = cls.count_key()
 
         return datas, count
+    
+    @classmethod
+    def get_key_by_today(cls):
+            # 获取今天所有数据
+            now = datetime.now()
+            start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            end_of_today = start_of_today + timedelta(days=1) - timedelta(microseconds=1)
+        
+            # 从有序集合中获取今天的键
+            keys = task_redis_server.zrangebyscore(sorted_set_key, start_of_today.timestamp(), end_of_today.timestamp())
+
+            return keys
+
+    
+    @classmethod
+    def get_today_info(cls):
+        keys = cls.get_key_by_today()
+        datas = cls.get_data_by_key(keys)
+        today_all_request, today_success_request, today_fail_request, all_failed_urls = cls.analyse_data(datas)
+        
+        dict = {
+            'today_all_request': today_all_request,
+            'today_success_request': today_success_request,
+            'today_fail_request': today_fail_request,
+            'all_failed_urls': all_failed_urls
+        }
+         
+        return dict
+
+    @classmethod
+    def analyse_data(cls,datas):
+        # 今天爬取的所有数据
+        today_all_request = 0
+        # 今天爬取的成功所有数据
+        today_success_request = 0
+        # 今天爬取的失败所有数据
+        today_fail_request = 0
+
+        # 失败列表
+        all_failed_urls = []
+
+        for data in datas:
+            today_all_request += data['today_all_request']
+            today_success_request += data['today_success_request']
+            today_fail_request += data['today_fail_request']
+            all_failed_urls.extend(data['failed_urls'])
+
+        return today_all_request, today_success_request, today_fail_request, all_failed_urls
